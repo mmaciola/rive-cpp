@@ -8,16 +8,16 @@
 #include "rive/span.hpp"
 #include "rive/math/aabb.hpp"
 #include "rive/math/mat2d.hpp"
+#include "rive/math/raw_path.hpp"
 #include "rive/shapes/paint/blend_mode.hpp"
 #include "rive/shapes/paint/stroke_cap.hpp"
 #include "rive/shapes/paint/stroke_join.hpp"
 #include <cmath>
 #include <stdio.h>
 #include <cstdint>
+#include <vector>
 
 namespace rive {
-    class Vec2D;
-
     // A render buffer holds an immutable array of values
     class RenderBuffer : public RefCnt {
         const size_t m_Count;
@@ -31,19 +31,27 @@ namespace rive {
     extern rcp<RenderBuffer> makeBufferU32(Span<const uint32_t>);
     extern rcp<RenderBuffer> makeBufferF32(Span<const float>);
 
+    using Unichar = int32_t;
+    using GlyphID = uint16_t;
+
     class RenderFont {
     public:
-        struct AxisInfo {
+        struct Axis {
             uint32_t    tag;
             float       min;
             float       def;    // default value
             float       max;
         };
-        
-        virtual int countAxes() const { return 0; }
-        virtual std::vector<AxisInfo> getAxes() const { return std::vector<AxisInfo>; }
-        
-        // TODO: getGlyphPath(index) -> rawpath
+        virtual std::vector<Axis> getAxes() const { return std::vector<Axis>(); }
+
+        struct Coord {
+            uint32_t    tag;
+            float       value;
+        };
+        virtual RawPath getPath(GlyphID, const Coord[], int count) const = 0;
+
+        virtual int countGlyphs() const = 0;
+        virtual void charsToGlyphs(const Unichar[], GlyphID[], int count) const = 0;
     };
 
     struct RenderTextRun {
@@ -56,12 +64,12 @@ namespace rive {
         rcp<RenderFont>         font;
         float                   size;
 
-        size_t                  startTextIndex;
-        std::vector<uint16_t>   glyphs;
+        uint32_t                startTextIndex;
+        std::vector<GlyphID>    glyphs;
         std::vector<float>      xpos;   // xpos.size() == glyphs.size() + 1
     };
 
-    extern std::vector<RenderGlyphRun> shapeText(const uint32_t text[], size_t textCount,
+    extern std::vector<RenderGlyphRun> shapeText(const Unichar text[], size_t textCount,
                                                  const RenderTextRun[], size_t runCount);
 
     enum class RenderPaintStyle { stroke, fill };
