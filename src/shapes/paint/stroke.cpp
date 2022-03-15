@@ -30,7 +30,7 @@ void Stroke::draw(Renderer* renderer, CommandPath* path) {
         path = m_Effect->effectPath(reinterpret_cast<MetricsPath*>(path));
     }
 
-    renderer->drawPath(path->renderPath(), m_RenderPaint);
+    renderer->drawPath(path->renderPath(), renderPaint());
 }
 
 void Stroke::thicknessChanged() {

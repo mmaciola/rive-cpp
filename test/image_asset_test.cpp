@@ -6,13 +6,15 @@
 #include <rive/shapes/image.hpp>
 #include <rive/assets/image_asset.hpp>
 #include <rive/relative_local_asset_resolver.hpp>
+#include "no_op_factory.hpp"
 #include "no_op_renderer.hpp"
 #include "rive_file_reader.hpp"
 #include <catch.hpp>
 #include <cstdio>
 
 TEST_CASE("image assets loads correctly", "[assets]") {
-    RiveFileReader reader("../../test/assets/walle.riv");
+    rive::NoOpFactory emptyFactory;
+    RiveFileReader reader("../../test/assets/walle.riv", &emptyFactory);
     auto file = reader.file();
 
     auto node = file->artboard()->find("walle");
@@ -43,8 +45,10 @@ TEST_CASE("image assets loads correctly", "[assets]") {
 }
 
 TEST_CASE("out of band image assets loads correctly", "[assets]") {
+    rive::NoOpFactory gEmptyFactory;
+    
     std::string filename = "../../test/assets/out_of_band/walle.riv";
-    rive::RelativeLocalAssetResolver resolver(filename);
+    rive::RelativeLocalAssetResolver resolver(filename, &gEmptyFactory);
 
     FILE* fp = fopen(filename.c_str(), "rb");
     REQUIRE(fp != nullptr);
@@ -55,7 +59,7 @@ TEST_CASE("out of band image assets loads correctly", "[assets]") {
     uint8_t* bytes = new uint8_t[length];
     REQUIRE(fread(bytes, 1, length, fp) == length);
     auto reader = rive::BinaryReader(bytes, length);
-    auto file = rive::File::import(reader, nullptr, &resolver);
+    auto file = rive::File::import(&gEmptyFactory, reader, nullptr, &resolver);
 
     REQUIRE(file != nullptr);
     REQUIRE(file->artboard() != nullptr);

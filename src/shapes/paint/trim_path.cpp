@@ -4,7 +4,8 @@
 
 using namespace rive;
 
-TrimPath::TrimPath() : m_TrimmedPath(makeRenderPath()) {}
+// TODO: how do we get a render-path here???
+TrimPath::TrimPath() : m_TrimmedPath(nullptr /*makeRenderPath()*/) {}
 TrimPath::~TrimPath() { delete m_TrimmedPath; }
 
 StatusCode TrimPath::onAddedClean(CoreContext* context) {

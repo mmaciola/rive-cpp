@@ -4,11 +4,13 @@
 #include <rive/shapes/clipping_shape.hpp>
 #include <rive/shapes/rectangle.hpp>
 #include <rive/shapes/shape.hpp>
+#include "no_op_factory.hpp"
 #include "no_op_renderer.hpp"
 #include <catch.hpp>
 #include <cstdio>
 
 TEST_CASE("cloning an ellipse works", "[instancing]") {
+    rive::NoOpFactory emptyFactory;
     FILE* fp = fopen("../../test/assets/circle_clips.riv", "rb");
     REQUIRE(fp != nullptr);
 
@@ -18,7 +20,7 @@ TEST_CASE("cloning an ellipse works", "[instancing]") {
     uint8_t* bytes = new uint8_t[length];
     REQUIRE(fread(bytes, 1, length, fp) == length);
     auto reader = rive::BinaryReader(bytes, length);
-    auto file = rive::File::import(reader);
+    auto file = rive::File::import(&emptyFactory, reader);
 
     REQUIRE(file != nullptr);
     REQUIRE(file->artboard() != nullptr);
@@ -35,6 +37,7 @@ TEST_CASE("cloning an ellipse works", "[instancing]") {
 }
 
 TEST_CASE("instancing artboard clones clipped properties", "[instancing]") {
+    rive::NoOpFactory emptyFactory;
     FILE* fp = fopen("../../test/assets/circle_clips.riv", "rb");
     REQUIRE(fp != nullptr);
 
@@ -44,7 +47,7 @@ TEST_CASE("instancing artboard clones clipped properties", "[instancing]") {
     uint8_t* bytes = new uint8_t[length];
     REQUIRE(fread(bytes, 1, length, fp) == length);
     auto reader = rive::BinaryReader(bytes, length);
-    auto file = rive::File::import(reader);
+    auto file = rive::File::import(&emptyFactory, reader);
 
     REQUIRE(file != nullptr);
     REQUIRE(file->artboard() != nullptr);
@@ -72,6 +75,7 @@ TEST_CASE("instancing artboard clones clipped properties", "[instancing]") {
 }
 
 TEST_CASE("instancing artboard doesn't clone animations", "[instancing]") {
+    rive::NoOpFactory emptyFactory;
     FILE* fp = fopen("../../test/assets/juice.riv", "rb");
     REQUIRE(fp != nullptr);
 
@@ -81,7 +85,7 @@ TEST_CASE("instancing artboard doesn't clone animations", "[instancing]") {
     uint8_t* bytes = new uint8_t[length];
     REQUIRE(fread(bytes, 1, length, fp) == length);
     auto reader = rive::BinaryReader(bytes, length);
-    auto file = rive::File::import(reader);
+    auto file = rive::File::import(&emptyFactory, reader);
 
     REQUIRE(file != nullptr);
     REQUIRE(file->artboard() != nullptr);

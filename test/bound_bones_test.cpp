@@ -8,12 +8,13 @@
 #include <rive/shapes/points_path.hpp>
 #include <rive/shapes/rectangle.hpp>
 #include <rive/shapes/shape.hpp>
-#include "no_op_renderer.hpp"
+#include "no_op_factory.hpp"
 #include "rive_file_reader.hpp"
 #include <catch.hpp>
 #include <cstdio>
 
 TEST_CASE("bound bones load correctly", "[bones]") {
+    rive::NoOpFactory emptyFactory;
     RiveFileReader reader("../../test/assets/off_road_car.riv");
 
     auto node = reader.file()->artboard()->find("transmission_front_testing");

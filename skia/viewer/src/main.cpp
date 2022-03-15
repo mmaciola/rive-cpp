@@ -23,6 +23,7 @@
 #include "rive/file.hpp"
 #include "rive/layout.hpp"
 #include "rive/math/aabb.hpp"
+#include "skia_factory.hpp"
 #include "skia_renderer.hpp"
 
 #include "imgui/backends/imgui_impl_glfw.h"
@@ -30,6 +31,8 @@
 
 #include <cmath>
 #include <stdio.h>
+
+rive::SkiaFactory skiaFactory;
 
 std::string filename;
 std::unique_ptr<rive::File> currentFile;
@@ -69,7 +72,7 @@ void initStateMachine(int index) {
     animationIndex = -1;
     assert(fileBytes.size() != 0);
     rive::BinaryReader reader(rive::toSpan(fileBytes));
-    auto file = rive::File::import(reader);
+    auto file = rive::File::import(&skiaFactory, reader);
     if (!file) {
         fileBytes.clear();
         fprintf(stderr, "failed to import file\n");
@@ -94,7 +97,7 @@ void initAnimation(int index) {
     stateMachineIndex = -1;
     assert(fileBytes.size() != 0);
     rive::BinaryReader reader(rive::toSpan(fileBytes));
-    auto file = rive::File::import(reader);
+    auto file = rive::File::import(&skiaFactory, reader);
     if (!file) {
         fileBytes.clear();
         fprintf(stderr, "failed to import file\n");

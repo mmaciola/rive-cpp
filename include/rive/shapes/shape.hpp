@@ -17,6 +17,8 @@ namespace rive {
 
         bool m_WantDifferencePath = false;
 
+        Artboard* getArtboard() override { return artboard(); }
+
     public:
         Shape();
         void buildDependencies() override;
