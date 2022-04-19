@@ -12,6 +12,8 @@
 /// Default namespace for Rive Cpp runtime code.
 ///
 namespace rive {
+    class Playable;
+
     ///
     /// Tracks the success/failure result when importing a Rive file.
     ///
@@ -63,6 +65,8 @@ namespace rive {
                                    ImportResult* result  = nullptr,
                                    FileAssetResolver* assetResolver = nullptr);
 
+        std::unique_ptr<Playable> playable();
+    
         /// @returns the file's backboard. All files have exactly one backboard.
         Backboard* backboard() const { return m_Backboard.get(); }
 
